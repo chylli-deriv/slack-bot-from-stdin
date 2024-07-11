@@ -1,4 +1,4 @@
-module github.com/chylli-deriv/slack-bot-from-file
+module github.com/deriv-com/slack-bot-from-stdin
 
 go 1.22.4
 
