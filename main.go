@@ -17,17 +17,6 @@ func main() {
 
 	//connect to slack
 	slacker := slack.New(token)
-	// _, first_ts, err := slacker.PostMessage(channel, slack.MsgOptionText("Hello, world!", false))
-	// if err != nil {
-	// 	panic(err)
-	// }
-	// fmt.Println(first_ts)
-	// _, _, err = slacker.PostMessage(channel, slack.MsgOptionText("In a thead", false), slack.MsgOptionTS(first_ts))
-	// if err != nil {
-	// 	panic(err)
-	// }
-
-	// loop to read lines from stdin, and post to slack
 	scanner := bufio.NewScanner(os.Stdin)
 
 	// first section
@@ -54,6 +43,15 @@ func main() {
 	}
 }
 
+// readSection reads input from the scanner until an empty line is encountered.
+// It concatenates all read lines into a single string, which represents a section of text.
+// This function is particularly useful for reading distinct blocks of text separated by empty lines.
+//
+// Parameters:
+// - scanner: A pointer to a bufio.Scanner that reads from an input source, typically os.Stdin.
+//
+// Returns:
+// - A string containing all the lines read up until an empty line, which signifies the end of a section.
 func readSection(scanner *bufio.Scanner) string {
 	var section string
 	sectionStarted := false
