@@ -30,15 +30,17 @@ func main() {
 	// loop to read lines from stdin, and post to slack
 	scanner := bufio.NewScanner(os.Stdin)
 
-	// first line
-	scanner.Scan()
-	message := scanner.Text()
+	// first section
+	message := readSection(scanner)
 	_, first_ts, err := slacker.PostMessage(channel, slack.MsgOptionText(message, false))
 	if err != nil {
 		panic(err)
 	}
-	for scanner.Scan() { // Reads from stdin line by line
-		message := scanner.Text() // Gets the text of the current line
+	for {
+		message := readSection(scanner)
+		if message == "" {
+			break
+		}
 		if message != "" {
 			_, _, err := slacker.PostMessage(channel, slack.MsgOptionText(message, false), slack.MsgOptionTS(first_ts))
 			if err != nil {
@@ -50,4 +52,24 @@ func main() {
 	if err := scanner.Err(); err != nil {
 		fmt.Fprintln(os.Stderr, "Error reading from stdin:", err)
 	}
+}
+
+func readSection(scanner *bufio.Scanner) string {
+	var section string
+	sectionStarted := false
+	for scanner.Scan() {
+		line := scanner.Text()
+		if line == "" {
+			if sectionStarted {
+				break
+			} else {
+				continue
+			}
+		} else {
+			sectionStarted = true
+			section += line + "\n"
+		}
+	}
+	fmt.Printf("section: '%s'\n", section)
+	return section
 }
